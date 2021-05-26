@@ -63,6 +63,11 @@ class ElementCollection extends Array {
     return this;
   }
 
+  toggleClass(className) {
+    this.forEach(e => e.classList.toggle(className));
+    return this;
+  }
+
   hasClass(className) {
     return this.map(e => e.classList.contains(className)).filterOne();
   }
@@ -71,8 +76,14 @@ class ElementCollection extends Array {
     const camelProp = property.replace(/(-[a-z])/, g => {
       return g.replace('-', '').toUpperCase();
     });
-    this.forEach(e => (e.style[camelProp] = value));
-    return this;
+    if(value === undefined) {
+      var styles = [];
+      this.forEach(e => styles.push(getComputedStyle(e, null)[camelProp]));
+      return this.filterOne(styles);
+    } else {
+      this.forEach(e => (e.style[camelProp] = value));
+      return this;
+    }
   }
 
   hide() {
@@ -107,8 +118,9 @@ class ElementCollection extends Array {
     return this.map(e => e.getAttribute(attribute)).filterOne();
   }
 
-  filterOne() {
-    return this.length === 1 ? this[0] : this;
+  filterOne(e) {
+    var value = e || this;
+      return value.length === 1 ? value[0] : value;
   }
 
   append(value) {
