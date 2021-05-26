@@ -81,7 +81,21 @@ class ElementCollection extends Array {
     return this;
   }
 
+  text() {
+    return this.map(e => e.textContent).filterOne();
+  }
 
+  html() {
+    return this.map(e => e.innerHTML).filterOne();
+  }
+
+  val() {
+    return this.map(e => e.value).filterOne();
+  }
+
+  filterOne() {
+    return this.length === 1 ? this[0] : this;
+  }
 }
 
 class AjaxPromise {
