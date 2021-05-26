@@ -12,17 +12,17 @@ $(document).ready(function () {
   $(".prev").on("click", function () {
     const currentImg = $(".active")
     const prevImg = currentImg.prev()
-
+ 
     if (prevImg.length) {
       currentImg.removeClass("active").css("z-index", -10)
       prevImg.addClass("active").css("z-index", 10)
     }
   })
 
-  console.log($(document).parents());
+  console.log($('.slider-inner').sibling());
 })
 
-$.get({
+/* $.get({
   url: "https://jsonplaceholder.typicode.com/todos/1",
   success: data => {
     console.log("First success", data)
@@ -30,4 +30,4 @@ $.get({
 })
   .done(data => console.log("Second success", data))
   .fail(e => console.error("Fail", e))
-  .always(() => console.log("Always"))
+  .always(() => console.log("Always")) */
