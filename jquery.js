@@ -63,6 +63,10 @@ class ElementCollection extends Array {
     return this;
   }
 
+  hasClass(className) {
+    return this.map(e => e.classList.contains(className)).filterOne();
+  }
+
   css(property, value) {
     const camelProp = property.replace(/(-[a-z])/, g => {
       return g.replace('-', '').toUpperCase();
@@ -81,20 +85,72 @@ class ElementCollection extends Array {
     return this;
   }
 
-  text() {
-    return this.map(e => e.textContent).filterOne();
+  text(value) {
+    return value === undefined
+      ? this.map(e => e.textContent).filterOne()
+      : this.map(e => (e.textContent = value)).filterOne();
   }
 
-  html() {
-    return this.map(e => e.innerHTML).filterOne();
+  html(value) {
+    return value === undefined
+      ? this.map(e => e.innerHTML).filterOne()
+      : this.map(e => (e.innerHTML = value)).filterOne();
   }
 
-  val() {
-    return this.map(e => e.value).filterOne();
+  val(value) {
+    return value === undefined
+      ? this.map(e => e.value).filterOne()
+      : this.map(e => (e.value = value)).filterOne();
+  }
+
+  attr(attribute) {
+    return this.map(e => e.getAttribute(attribute)).filterOne();
   }
 
   filterOne() {
     return this.length === 1 ? this[0] : this;
+  }
+
+  append(value) {
+    if (typeof value === 'string') {
+      this.map(e => e.insertAdjacentHTML('beforeend', value));
+    }
+    return this;
+  }
+
+  after(value) {
+    if (typeof value === 'string') {
+      this.map(e => e.insertAdjacentHTML('afterend', value));
+    }
+    return this;
+  }
+
+  prepend(value) {
+    if (typeof value === 'string') {
+      this.map(e => e.insertAdjacentHTML('afterbegin', value));
+    }
+    return this;
+  }
+
+  before(value) {
+    if (typeof value === 'string') {
+      this.map(e => e.insertAdjacentHTML('beforebegin', value));
+    }
+    return this;
+  }
+
+  remove() {
+    this.map(e => e.remove());
+    return this;
+  }
+
+  empty() {
+    this.forEach(e => {
+      while (e.firstChild) {
+        e.removeChild(e.firstChild);
+      }
+    });
+    return this;
   }
 }
 
