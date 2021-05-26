@@ -76,7 +76,7 @@ class ElementCollection extends Array {
     const camelProp = property.replace(/(-[a-z])/, g => {
       return g.replace('-', '').toUpperCase();
     });
-    if(value === undefined) {
+    if (value === undefined) {
       var styles = [];
       this.forEach(e => styles.push(getComputedStyle(e, null)[camelProp]));
       return this.filterOne(styles);
@@ -120,7 +120,7 @@ class ElementCollection extends Array {
 
   filterOne(e) {
     var value = e || this;
-      return value.length === 1 ? value[0] : value;
+    return value.length === 1 ? value[0] : value;
   }
 
   append(value) {
@@ -169,6 +169,56 @@ class ElementCollection extends Array {
       }
     });
     return this;
+  }
+
+  innerWidth() {
+    return this.map(e => e.clientWidth).filterOne();
+  }
+
+  innerHeight() {
+    return this.map(e => e.clientHeight).filterOne();
+  }
+
+  outerWidth(calMargin) {
+    return this.map(e => {
+      var getMarginLeft = this.getCssNumber('margin-left');
+      var getMarginRight = this.getCssNumber('margin-right');
+
+      return calMargin === true
+        ? e.offsetWidth + (getMarginLeft + getMarginRight)
+        : e.offsetWidth;
+    }).filterOne();
+  }
+
+  outerHeight() {
+    return this.map(e => {
+      var getMarginTop = this.getCssNumber('margin-top');
+      var getMarginBottom = this.getCssNumber('margin-bottom');
+      return calMargin === true
+        ? e.offsetHeight + (getMarginTop + getMarginBottom)
+        : e.offsetHeight;
+    }).filterOne();
+  }
+
+  width() {
+    return this.map(e => {
+      var getPaddingLeft = this.getCssNumber('padding-left');
+      var getPaddingRight = this.getCssNumber('padding-right');
+      return this.innerWidth() - (getPaddingLeft + getPaddingRight);
+    }).filterOne();
+  }
+
+  height() {
+    return this.map(e => {
+      var getPaddingTop = this.getCssNumber('padding-top');
+      var getPaddingBottom = this.getCssNumber('padding-bottom');
+      return this.innerWidth() - (getPaddingTop + getPaddingBottom);
+    }).filterOne();
+  }
+
+  getCssNumber(property) {
+    var getNumber = /[0-9]+/;
+    return Number(this.css(property).match(getNumber)[0]);
   }
 }
 
