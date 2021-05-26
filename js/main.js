@@ -19,7 +19,8 @@ $(document).ready(function () {
     }
   })
 
-  console.log($('h1').parents('body').html());
+  // console.log($('h1').parents('body').html());
+  console.log($('.slider-inner').parents('body'));
 })
 
 /* $.get({

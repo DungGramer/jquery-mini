@@ -25,47 +25,51 @@ class ElementCollection extends Array {
   }
 
   parent() {
-    return this.map(elem => elem.parentElement);
+    return this.map(elem => elem.parentElement || elem).filterOne();
   }
 
   parents(element) {
-    var arrParent = [];
     this.forEach(e => {
       var curr = e;
-      var pushToArrParent = function () {
-        arrParent.push(curr);
-        curr = curr.parentElement;
-      };
+
       if (!element) {
         while (curr !== null) {
-          pushToArrParent();
+          this.push(curr);
+          curr = curr.parentElement;
         }
       } else {
-        var domEl = document.querySelector(element);
-        if (domEl) {
-          while (!curr.isSameNode(domEl)) {
-            pushToArrParent();
-          }
+        this.push(document.querySelector(element));
+      }
+    });
+    return this;
+  }
+
+  parentsUntil(element) {
+    var domEl = document.querySelector(element);
+    this.forEach(e => {
+      var curr = e;
+      if (domEl) {
+        while (!curr.isSameNode(domEl)) {
+          this.push(curr);
+          curr = curr.parentElement;
         }
       }
     });
-    this.push(...arrParent);
     return this;
   }
 
   sibling() {
     var matched = [];
-    var parents = this.parents();
+    var parent = this.parent();
 
-    parents.forEach(parent =>
-      [...parent.children].forEach(elem =>
-        this.forEach(t => {
-          if (t.nodeType === 1 && t !== elem) matched.push(elem);
-        })
-      )
+    [...parent.children].forEach(elem =>
+      this.forEach(t => {
+        if (t.nodeType === 1 && t !== elem) matched.push(elem);
+      })
     );
 
-    return matched;
+    this.push(...matched);
+    return this;
   }
 
   next() {
