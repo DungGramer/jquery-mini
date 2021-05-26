@@ -24,6 +24,23 @@ class ElementCollection extends Array {
     return this;
   }
 
+  children(value) {
+    var newArr = [];
+    this.forEach(e => {
+      if (!value) {
+        newArr.push(...e.children);
+      } else {
+        newArr.push(...e.querySelectorAll(value));
+      }
+    });
+
+    // Clean current Selector
+    this.length = 0;
+
+    this.push(...newArr);
+    return this;
+  }
+
   parent() {
     return this.map(elem => elem.parentElement || elem).filterOne();
   }
