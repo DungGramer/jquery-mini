@@ -70,6 +70,18 @@ class ElementCollection extends Array {
     this.forEach(e => (e.style[camelProp] = value));
     return this;
   }
+
+  hide() {
+    this.map(e => e.setAttribute('hidden', ''));
+    return this;
+  }
+
+  show() {
+    this.map(e => e.removeAttribute('hidden'));
+    return this;
+  }
+
+
 }
 
 class AjaxPromise {

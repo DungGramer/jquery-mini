@@ -19,7 +19,7 @@ $(document).ready(function () {
     }
   })
 
-  console.log($('.slider-inner').sibling());
+  console.log($('h1').text());
 })
 
 /* $.get({
