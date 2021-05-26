@@ -19,7 +19,7 @@ $(document).ready(function () {
     }
   })
 
-  console.log($('h1').val());
+  console.log($('h1').parents('body').html());
 })
 
 /* $.get({

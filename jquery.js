@@ -24,10 +24,33 @@ class ElementCollection extends Array {
     return this;
   }
 
-  parents() {
-    return this.map(elem =>
-      elem === document ? elem : elem.parentNode
-    ).filter(Boolean);
+  parent() {
+    return this.map(elem => elem.parentElement);
+  }
+
+  parents(element) {
+    var arrParent = [];
+    this.forEach(e => {
+      var curr = e;
+      var pushToArrParent = function () {
+        arrParent.push(curr);
+        curr = curr.parentElement;
+      };
+      if (!element) {
+        while (curr !== null) {
+          pushToArrParent();
+        }
+      } else {
+        var domEl = document.querySelector(element);
+        if (domEl) {
+          while (!curr.isSameNode(domEl)) {
+            pushToArrParent();
+          }
+        }
+      }
+    });
+    this.push(...arrParent);
+    return this;
   }
 
   sibling() {
