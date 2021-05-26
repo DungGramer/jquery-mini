@@ -139,8 +139,14 @@ class ElementCollection extends Array {
     return this;
   }
 
-  remove() {
-    this.map(e => e.remove());
+  remove(value) {
+    if (value === undefined) {
+      this.map(e => e.remove());
+    } else {
+      this.map(elem =>
+        [...elem.querySelectorAll(value)].forEach(e => e.remove())
+      );
+    }
     return this;
   }
 
