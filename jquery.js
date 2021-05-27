@@ -25,7 +25,7 @@ class ElementCollection extends Array {
   }
 
   children(value) {
-    var newArr = [];
+    let newArr = [];
     this.forEach(e => {
       if (!value) {
         newArr.push(...e.children);
@@ -42,12 +42,12 @@ class ElementCollection extends Array {
   }
 
   parent() {
-    return this.map(elem => elem.parentElement || elem).filterOne();
+    return this.map(elem => elem.parentElement || elem);
   }
 
   parents(element) {
     this.forEach(e => {
-      var curr = e;
+      let curr = e;
 
       if (!element) {
         while (curr !== null) {
@@ -62,9 +62,9 @@ class ElementCollection extends Array {
   }
 
   parentsUntil(element) {
-    var domEl = document.querySelector(element);
+    let domEl = document.querySelector(element);
     this.forEach(e => {
-      var curr = e;
+      let curr = e;
       if (domEl) {
         while (!curr.isSameNode(domEl)) {
           this.push(curr);
@@ -76,8 +76,8 @@ class ElementCollection extends Array {
   }
 
   sibling() {
-    var matched = [];
-    var parent = this.parent();
+    let matched = [];
+    let parent = this.parent();
 
     [...parent.children].forEach(elem =>
       this.forEach(t => {
@@ -95,6 +95,90 @@ class ElementCollection extends Array {
 
   prev() {
     return this.map(e => e.previousElementSibling).filter(e => e != null);
+  }
+
+  nextAll() {
+    let arrSibling = [];
+    this.forEach(e => {
+      let nextSelector = e.nextElementSibling;
+
+      while (nextSelector !== null) {
+        arrSibling.push(nextSelector);
+        nextSelector = nextSelector.nextElementSibling;
+      }
+    });
+
+    this.length = 0;
+    this.push(...arrSibling);
+    return this;
+  }
+
+  prevAll() {
+    let arrSibling = [];
+    this.forEach(e => {
+      let prevSelector = e.previousElementSibling;
+
+      while (prevSelector !== null) {
+        arrSibling.push(prevSelector);
+        prevSelector = prevSelector.previousElementSibling;
+      }
+    });
+
+    this.length = 0;
+    this.push(...arrSibling);
+    return this;
+  }
+
+  nextUntil(value) {
+    if (typeof value === 'string') {
+      let arrSibling = [];
+
+      this.forEach(e => {
+        let nextSelector = e.nextElementSibling;
+        this.parent().forEach(par => {
+          let targetSelector = par.querySelector(value);
+
+          try {
+            if (targetSelector) {
+              while (!nextSelector.isSameNode(targetSelector)) {
+                arrSibling.push(nextSelector);
+                nextSelector = nextSelector.nextElementSibling;
+              }
+            }
+          } catch (e) {}
+        });
+      });
+
+      this.length = 0;
+      this.push(...arrSibling);
+      return this;
+    }
+  }
+
+  prevUntil(value) {
+    if (typeof value === 'string') {
+      let arrSibling = [];
+
+      this.forEach(e => {
+        let nextSelector = e.previousElementSibling;
+        this.parent().forEach(par => {
+          let targetSelector = par.querySelector(value);
+
+          try {
+            if (targetSelector) {
+              while (!nextSelector.isSameNode(targetSelector)) {
+                arrSibling.push(nextSelector);
+                nextSelector = nextSelector.previousElementSibling;
+              }
+            }
+          } catch (e) {}
+        });
+      });
+
+      this.length = 0;
+      this.push(...arrSibling);
+      return this;
+    }
   }
 
   removeClass(className) {
@@ -121,7 +205,7 @@ class ElementCollection extends Array {
       return g.replace('-', '').toUpperCase();
     });
     if (value === undefined) {
-      var styles = [];
+      let styles = [];
       this.forEach(e => styles.push(getComputedStyle(e, null)[camelProp]));
       return this.filterOne(styles);
     } else {
@@ -163,7 +247,7 @@ class ElementCollection extends Array {
   }
 
   filterOne(e) {
-    var value = e || this;
+    let value = e || this;
     return value.length === 1 ? value[0] : value;
   }
 
@@ -225,8 +309,8 @@ class ElementCollection extends Array {
 
   outerWidth(calMargin) {
     return this.map(e => {
-      var getMarginLeft = this.getCssNumber('margin-left');
-      var getMarginRight = this.getCssNumber('margin-right');
+      let getMarginLeft = this.getCssNumber('margin-left');
+      let getMarginRight = this.getCssNumber('margin-right');
 
       return calMargin === true
         ? e.offsetWidth + (getMarginLeft + getMarginRight)
@@ -236,8 +320,8 @@ class ElementCollection extends Array {
 
   outerHeight() {
     return this.map(e => {
-      var getMarginTop = this.getCssNumber('margin-top');
-      var getMarginBottom = this.getCssNumber('margin-bottom');
+      let getMarginTop = this.getCssNumber('margin-top');
+      let getMarginBottom = this.getCssNumber('margin-bottom');
       return calMargin === true
         ? e.offsetHeight + (getMarginTop + getMarginBottom)
         : e.offsetHeight;
@@ -246,22 +330,22 @@ class ElementCollection extends Array {
 
   width() {
     return this.map(e => {
-      var getPaddingLeft = this.getCssNumber('padding-left');
-      var getPaddingRight = this.getCssNumber('padding-right');
+      let getPaddingLeft = this.getCssNumber('padding-left');
+      let getPaddingRight = this.getCssNumber('padding-right');
       return this.innerWidth() - (getPaddingLeft + getPaddingRight);
     }).filterOne();
   }
 
   height() {
     return this.map(e => {
-      var getPaddingTop = this.getCssNumber('padding-top');
-      var getPaddingBottom = this.getCssNumber('padding-bottom');
+      let getPaddingTop = this.getCssNumber('padding-top');
+      let getPaddingBottom = this.getCssNumber('padding-bottom');
       return this.innerWidth() - (getPaddingTop + getPaddingBottom);
     }).filterOne();
   }
 
   getCssNumber(property) {
-    var getNumber = /[0-9]+/;
+    let getNumber = /[0-9]+/;
     return Number(this.css(property).match(getNumber)[0]);
   }
 }
